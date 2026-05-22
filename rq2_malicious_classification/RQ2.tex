@@ -1,0 +1,56 @@
+\section{RQ2: Malicious Classification}
+
+To answer \roundframe{RQ2}, we study how existing security scanners classify agent skills and evaluate the consistency of their maliciousness assessments. We compare scanner reports from skill marketplaces with the results of our own analysis pipeline, which includes the Cisco Skill Scanner and an LLM-based behavioral classifier. This comparison allows us to quantify how different scanning approaches interpret the same skills and to identify potential overclassification of malicious behavior. Understanding these differences is important because high false positive rates may reduce trust in the ecosystem, confuse end-users, and motivate the need for repository-aware analysis.
+
+\paragraph{Malicious Classification Rates.}
+
+\input{tables/skillsh_security_scanners}
+
+We compare the malicious classification rates reported by existing marketplace scanners with the results of our own analysis pipeline. Across both platforms, we observe substantial differences between scanners. On Clawhub, the OpenClaw scanner flags up to 41.93\% of skills as suspicious, while VirusTotal reports a similar rate of 36.20\%. Our GPT-5.3 based approach produces comparable results, classifying 38.8\% of skills as malicious. In contrast, the Cisco Skill Scanner reports a significantly lower fail rate of 16.74\%. These differences highlight that the perceived security of the skill ecosystem strongly depends on the chosen scanning approach.
+
+The discrepancy between scanners is more pronounced when comparing the two marketplaces. On Clawhub, fail rates range from 16.7\% to 41.9\%, suggesting that a substantial fraction of skills may exhibit potentially suspicious behavior. 
+In contrast, scanners deployed on Skills.sh report much lower fail rates, ranging from 3.79\% to 13.76\%. Our own analysis tools show similar trends: the GPT-5.3-based analysis classifies 27.28\%  of Skills.sh skills as suspicious, while the Cisco scanner flags 14.04\%. These discrepancies indicate that existing scanners produce inconsistent classifications when they analyze skills in isolation. In particular, scanners that rely on behavioral heuristics or language model reasoning flag substantially larger portions of the ecosystem as suspicious. Such elevated fail rates can reduce trust in the ecosystem and suggest that many skills are misclassified as malicious. This observation motivates the need for additional context to enable more accurate classification of skill behavior.
+
+\begin{figure}[t]
+  \centering
+  \begin{minipage}{0.55\linewidth}
+      \centering
+      \includegraphics[width=\linewidth]{figures/skillsh_conditional.pdf}
+      \caption{Conditional scanner agreement on Skills.sh common skills.}%, shown
+  %as \(P(B\text{ flags}\mid A\text{ flags})\).}
+  \Description{The figure presents the conditional agreement between scanners on common skills from Skills.sh.}
+      \label{fig:skillssh_conditional_overlap}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.40\linewidth}
+      \centering
+      \includegraphics[width=\linewidth]{figures/skillsh_conditional_bar.pdf}
+      \caption{Number of Skills.sh common skills flagged by exactly \(k\in\{1,
+  \dots,5\}\) scanners.}
+        \Description{The figure shows the number of Skills.sh common skills flagged by exactly \(k\in\{1,
+  \dots,5\}\) scanners.} % TODO: Update
+      \label{fig:skillssh_flagged_by_k}
+  \end{minipage}
+  \end{figure}
+
+
+%\begin{tcolorbox}[takeawaystyle={Takeaway}]
+%Malicious classification rates vary widely across scanners, ranging from 3.8\% to 41.9\%. Such large differences suggest that many scanners may overclassify benign skills as malicious when analyzing skills in isolation.
+%\end{tcolorbox}
+
+%our repository-aware analysis in the next step, where we incorporate repository context to distinguish genuinely malicious skills from benign skills that appear suspicious when analyzed without their surrounding project environment.
+
+
+\paragraph{Cross-Scanner Agreement.} To evaluate how consistently scanners classify skills as malicious, we compare the results of five scanners on the subset of 27,111 Skills.sh skills analyzed by all tools. \Cref{fig:skillssh_conditional_overlap} shows the conditional overlap between scanners, expressed as the probability that a skill flagged by scanner \(A\) is also flagged by scanner \(B\). Overall, agreement between scanners is low and often asymmetric. For example, 33\% of skills flagged by the Cisco Skill Scanner are also flagged by the GPT-5.3-based analysis, whereas only 10.2\% of GPT-5.3 detections overlap with Cisco. Similar patterns appear across other scanner pairs, indicating that scanners frequently identify different sets of skills as suspicious. \Cref{fig:skillssh_flagged_by_k} illustrates the distribution of detections across scanners.
+Among the 8,402 skills flagged by at least one scanner, most are flagged by a single scanner, 6,032 skills. In contrast, 1,629 skills are flagged by two scanners and 540 by three scanners. Only 168 skills are flagged by four scanners, and just 33 skills are flagged by all five scanners. The limited overlap shows that scanner consensus is rare and that most detections lack corroboration by other tools.
+
+
+
+
+  \paragraph{Repository-level Classification Rates.}
+
+\input{tables/skillsh_security_scans}
+
+To better understand how scanner results translate from individual skills to repositories, we aggregate skill-level detections at the repository level. \Cref{tab:skills_sh_detection_rates_strict} shows the resulting malicious classification rates for both skills and repositories on Skills.sh. A skill is considered malicious if at least one scanner flags it, while a repository is classified as malicious if any of its contained skills is flagged.
+Overall, 19.29\% of skills are flagged as malicious. When focusing on popular skills, the rates remain comparable: 21.44\% for skills hosted in repositories with more than 1,000 stars and 16.16\% for skills with more than 1,000 installs. However, the picture changes when aggregating these detections at the repository level. Nearly half of all repositories (45.89\%) contain at least one flagged skill. This proportion increases further for popular repositories, reaching 50.76\% for repositories with more than 1,000 stars and 61.40\% for repositories associated with highly installed skills.
+These results suggest that even well-known repositories are frequently classified as malicious when applying strict aggregation rules. The effect is driven by repositories containing multiple skills: as the number of skills per repository increases, the probability that at least one skill is flagged also increases. Consequently, repository-level aggregation can substantially amplify skill-level detections and may overstate the prevalence of malicious repositories in the ecosystem.

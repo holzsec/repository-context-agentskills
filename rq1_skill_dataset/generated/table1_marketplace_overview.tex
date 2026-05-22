@@ -1,0 +1,44 @@
+\begin{table}[t]
+\setlength{\tabcolsep}{3pt}
+\caption{Overview of collected agent skills from ClawHub~\cite{steinberger:2026:clawhub}, SkillDirectory~\cite{skilldirectory}, Skills.sh~\cite{skills_sh}, and GitHub. Retrieved denotes successfully downloaded skills retained for analysis; Added denotes skills retained after cross-source deduplication. For Skills.sh, the crawl retrieved 55{,}366 listed skills and 77{,}456 additional skills extracted from referenced repositories.}
+\label{tab:clawhub_overview}
+\centering
+\begin{tabularx}{\linewidth}{Xrrrr}
+\toprule
+\textbf{Skills Metric} & \textbf{ClawHub} & \textbf{SkillsDir.} & \textbf{Skills.sh} & \textbf{GitHub} \\
+\midrule
+\textbf{Indexed}
+& 16{,}755
+& 32{,}896
+& 79{,}735
+& 142{,}824
+\\
+\textbf{Retrieved}
+& 16{,}755
+& 17{,}611
+& 125{,}928
+& 136{,}095
+\\
+\textbf{Added}
+& 16{,}755
+& 17{,}611
+& 112{,}231
+& 91{,}583
+\\\addlinespace
+\textbf{Owners}
+& n/a
+& 709
+& 7{,}950
+& 14{,}197
+\\
+\textbf{Repositories}
+& n/a
+& 766
+& 9{,}431
+& 16{,}413
+\\
+\midrule
+\multicolumn{5}{l}{\textbf{\#Total} 238{,}180 distinct analyzed skills after deduplication} \\
+\bottomrule
+\end{tabularx}
+\end{table}

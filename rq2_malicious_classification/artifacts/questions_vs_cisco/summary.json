@@ -1,0 +1,20 @@
+{
+  "created_at": "2026-03-06T18:34:15.008966+00:00",
+  "db": "../data/rq2_malicious_classification/security_scan_with_questions.db",
+  "run_name": "results_questions_with_security_scanner_classification",
+  "llm_threshold": 4,
+  "overlap": {
+    "total_common": 52577,
+    "both": 3074,
+    "llm_only": 11269,
+    "cisco_only": 4307,
+    "neither": 33927,
+    "llm_fail": 14343,
+    "llm_pass": 38234,
+    "cisco_fail": 7381,
+    "cisco_pass": 45196
+  },
+  "outputs": {
+    "latex_rows": "skills_sh_scanner_table_rows_questions_vs_cisco.tex"
+  }
+}

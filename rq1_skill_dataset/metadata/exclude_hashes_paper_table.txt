@@ -1,0 +1,4 @@
+# Present in repro/unique_skills.txt but absent from the checked-in packaging manifest.
+# Excluded to reproduce the paper's GitHub analyzed count (136,095) and total (238,180).
+824b7a2d59cd1edd1c1abcb99c5225e6d7fa3388380df15d19046c276461a463
+bf578858b85ad8c43e0e53cbe9ecd04d382077a7e0e75cb200105a207075366c

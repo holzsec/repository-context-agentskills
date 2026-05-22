@@ -1,0 +1,86 @@
+
+
+
+\section{RQ1: Cross-platform Skill Analysis}
+
+We first present results on the differences between the marketplaces and the additional skills that we discovered on GitHub. We then provide an overview of the content of the published skills, and demonstrate how attackers can hijack skills referenced in two marketplaces.
+
+
+\input{tables/skill_overview}
+
+
+\begin{figure}[t]
+\centering
+\begin{minipage}{0.43\linewidth}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/timeline_weekly_latest_updated.pdf}
+    \caption{All platforms show an increase in number of weekly updated agent skills over time.}
+    \Description{The figure shows the temporal evolution of weekly modified agent skills across all investigated platforms. Each platform exhibits a clear upward trend, indicating a steady increase in the number of newly introduced skills over time.} 
+        \label{fig:weeklyskills}
+\end{minipage}
+\hfill
+\begin{minipage}{0.53\linewidth}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/marketplace_overlap_upset_retrieved_compact.pdf}
+    \caption{Overlap of skills retrieved from the marketplaces.}
+    \Description{The figure illustrates the overlap of skills published across different marketplaces.}
+    \label{fig:overlap}
+\end{minipage}
+
+\end{figure}
+
+
+
+\subsection{Collected Skill Dataset}
+
+\Cref{tab:clawhub_overview} summarizes the skills that we crawled from the different marketplaces and the subset that we successfully downloaded and analyzed.
+In total, we indexed 16{,}755 skills from ClawHub, 79{,}735 marketplace-listed skills from Skills.sh, 32{,}896 skills from SkillDirectory, and 142{,}822 skills referenced on GitHub.
+For Skills.sh, 55{,}366 of the indexed marketplace entries could be retrieved directly.
+In addition, we extracted 77{,}456 further skill folders from repositories referenced by Skills.sh, resulting in 125{,}928 analyzed Skills.sh skills in total.
+
+During collection, we encountered several issues that limited the number of retrievable skills.
+For SkillDirectory, a large repository subdirectory that effectively represents a separate skill collection was omitted, resulting in 13{,}304 skills not being retrieved.
+In addition, changes in repository structures caused skill paths referenced by the marketplaces to become invalid.
+Specifically, 21{,}800 skills referenced by marketplace indexes were no longer present in the repositories, and another 3{,}991 repositories no longer contained skills referenced by \textit{Skills.sh}.
+Furthermore, 188 repositories had become private or required authentication at the time of collection.
+These issues highlight the dynamic nature of the ecosystem and the challenges of reliably archiving skill datasets.
+\Cref{fig:weeklyskills} further shows the number of skills added to these platforms each week since November 2025.
+
+In total, we successfully downloaded and analyzed 16{,}755 skills from ClawHub, 125{,}928 from Skills.sh, 17{,}611 from SkillDirectory, and 136{,}095 from GitHub.
+In \Cref{fig:overlap}, we show the overlap of skills across the platforms.
+The figure illustrates that a substantial fraction of skills appears on multiple marketplaces, indicating that many platforms reference the same underlying repositories.
+In particular, GitHub acts as the primary hosting platform for most skills, while the marketplaces serve as discovery layers.
+At the same time, each marketplace contributes skills not listed in the others, reflecting differences in indexing scope and update frequency.
+Overall, aggregating multiple marketplaces increases coverage of the skill ecosystem and results in a final dataset of 238{,}180 cross-marketplace unique skills for further analysis.
+
+The marketplaces also differ in their ecosystem structure.
+Skills.sh references 7{,}950 owners and 9{,}431 repositories, while the GitHub dataset spans 14{,}197 owners and 16{,}413 repositories.
+SkillDirectory is comparatively smaller, with 709 owners and 766 repositories.
+These numbers indicate that many repositories host multiple skills, suggesting that developers frequently group related skills within a single project rather than publishing them individually.
+
+\paragraph{Skill Content.}
+\input{tables/skill_content}
+We further analyzed which scripts skills contain and provided a table in our artifact~\cite{artifact:skill_scripts}.
+Across all marketplaces, Python scripts appear most frequently, followed by shell scripts, JavaScript, and TypeScript. However, the share of skills that include at least one script differs across marketplaces. While Skills.sh, SkillsDirectory, and GitHub have a similar range of skills containing scripts (11.8\% to 15.7\%), ClawHub shows a substantially higher share of skills including at least one script (44.1\%). One explanation for this difference could be that ClawHub more specifically targets OpenClaw instead of general agents.
+
+We further evaluate whether scripts reside in a directory named \texttt{scripts/}, as defined by the specification~\cite{skill_specification_mintlify}. Again, ClawHub represents an outlier. Among skills that include scripts from ClawHub, 13.2\% lack a \texttt{scripts/} directory. In contrast, only 2.9\% to 3.4\% of skills from the other marketplaces contain scripts without the corresponding directory.
+
+
+\paragraph{Secrets.}
+We further analyzed whether skills contain valid tokens and credentials. In total, we discovered 12 functional credentials, including four for the NVIDIA API, three for ElevenLabs, two Gemini tokens, two MongoDB credentials, and one credential each for Amplify, Postgres, and X AI.
+Attackers could abuse these credentials to access third party services and perform actions on behalf of the credential owner. For example, NVIDIA, ElevenLabs, Gemini, and xAI token allow access to AI services, which attackers could use to issue requests that incur costs for the owner. One reason for the relatively small number of discovered secrets may be that most skills are hosted on GitHub. In contrast to mobile apps~\cite{schmidt:2025:app_secrets} or accessible storage buckets~\cite{yadmani:2025:s3_secrets}, developers are likely more aware that the code is publicly visible and that attackers could access any embedded secret.
+
+
+\subsection{Skill Provisioning}
+For the security of distributed skills, similar considerations as for dependency management systems apply. Attackers can hijack dependencies if the system does not host the dependency itself and the URL hosting it can be taken over, for example because a username on GitHub was renamed~\cite{schmidt:2025:app_secrets}. In addition, the authentication mechanism used to publish a skill plays an important role, as weak or missing authentication can enable attackers to hijack existing dependencies or skills. We therefore looked into the currently implemented authentication mechanisms for publishing skills and their distribution. For authentication, ClawHub and SkillsDirectory rely on GitHub authentication, while Skills.sh provides no authentication. Instead, the marketplace adds skills when users download them using the command line tool with telemetry enabled. In this sense, the system resembles Go modules, which also do not implement a separate authentication mechanism but cache dependencies~\cite{gu:2023:software_registries}.
+However, instead of caching or redistributing the skills, Skills.sh directly downloads them from GitHub. This design can enable attackers to hijack existing repositories if the previous owner renames their account and the repository has not yet reached the required download threshold that would cause GitHub to retire the repository name~\cite{schmidt:2026:supplychaininsecurityexposing}. The same issue also affects SkillsDirectory. Although SkillsDirectory provides the option to download skills from its website, the command line tool currently attempts to download the skill from GitHub.
+In contrast, ClawHub directly distributes the skill. This design reduces the dependency on third-party URL management and therefore decreases the risk of repository hijacking.
+
+\paragraph{Skills Vulnerable to Hijacking.}
+To test whether GitHub mitigates repository hijacking for vulnerable skills, we created test accounts using the associated usernames and entered the repository names without creating the repositories. This approach keeps existing redirects functional while revealing whether an attacker could recreate the repository under the same name~\cite{schmidt:2026:supplychaininsecurityexposing}. To prevent attackers from hijacking vulnerable skills, we keep the account names associated with vulnerable skills reserved. We performed this step for all identified repositories with five or more stars, as the process of registering GitHub accounts cannot be automated.
+
+Overall, we discovered 121 skills that forward to seven vulnerable repositories. Among them, 77 skills indexed by Skills.sh reference five vulnerable repositories, while 44 skills listed on SkillsDirectory reference two additional vulnerable repositories. One hijackable repository referenced by SkillsDirectory has 159 stars, whereas the maximum star count among vulnerable repositories referenced by Skills.sh is 48. 
+Using the download statistics provided by Skills.sh, we further assessed how frequently hijackable skills were downloaded. The median number of downloads is 25, while the most often downloaded skill reached 2,032 downloads. 
+
+We responsibly disclosed this attack vector to the affected platforms and recommended switching to a direct distribution model similar to OpenClaw. 
+

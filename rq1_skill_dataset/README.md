@@ -62,6 +62,9 @@ rq1_skill_dataset/
 │           ├── skill_language_analysis.py
 │           ├── verified_secrets_per_marketplace.py
 │           └── vulnerable_repos_per_marketplace.py
+├── tables/
+│   ├── skill_content.pdf   <- Table: script presence and language distribution by marketplace
+│   └── locations.pdf       <- Table: geographic distribution of endpoints (eTLD+1) by marketplace
 ├── generated/              <- output directory (PDF/PNG/TeX written here)
 └── run_repro_artifacts.sh
 ```
@@ -353,6 +356,8 @@ Individual artifact scripts:
 - `paper_artifacts/generate_overlap_heatmap.py` - Figure 3 (heatmap)
 - `paper_artifacts/generate_overlap_upset.py` - Figure 3 (UpSet plot)
 - `paper_artifacts/additional_tables/` - endpoint, geolocation, language, verified-secret, and vulnerable-repository tables
+- `tables/skill_content.pdf` - pre-built table: script presence and language distribution by marketplace (cited in `RQ1.tex`)
+- `tables/locations.pdf` - pre-built table: geographic distribution of skill endpoints by marketplace (cited in `RQ1.tex`)
 
 ---
 

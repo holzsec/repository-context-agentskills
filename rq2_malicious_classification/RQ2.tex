@@ -16,8 +16,7 @@ In contrast, scanners deployed on Skills.sh report much lower fail rates, rangin
   \begin{minipage}{0.55\linewidth}
       \centering
       \includegraphics[width=\linewidth]{figures/skillsh_conditional.pdf}
-      \caption{Conditional scanner agreement on Skills.sh common skills.}%, shown
-  %as \(P(B\text{ flags}\mid A\text{ flags})\).}
+      \caption{Conditional scanner agreement on Skills.sh common skills.}
   \Description{The figure presents the conditional agreement between scanners on common skills from Skills.sh.}
       \label{fig:skillssh_conditional_overlap}
   \end{minipage}
@@ -28,26 +27,16 @@ In contrast, scanners deployed on Skills.sh report much lower fail rates, rangin
       \caption{Number of Skills.sh common skills flagged by exactly \(k\in\{1,
   \dots,5\}\) scanners.}
         \Description{The figure shows the number of Skills.sh common skills flagged by exactly \(k\in\{1,
-  \dots,5\}\) scanners.} % TODO: Update
+  \dots,5\}\) scanners.} 
       \label{fig:skillssh_flagged_by_k}
   \end{minipage}
   \end{figure}
-
-
-%\begin{tcolorbox}[takeawaystyle={Takeaway}]
-%Malicious classification rates vary widely across scanners, ranging from 3.8\% to 41.9\%. Such large differences suggest that many scanners may overclassify benign skills as malicious when analyzing skills in isolation.
-%\end{tcolorbox}
-
-%our repository-aware analysis in the next step, where we incorporate repository context to distinguish genuinely malicious skills from benign skills that appear suspicious when analyzed without their surrounding project environment.
-
 
 \paragraph{Cross-Scanner Agreement.} To evaluate how consistently scanners classify skills as malicious, we compare the results of five scanners on the subset of 27,111 Skills.sh skills analyzed by all tools. \Cref{fig:skillssh_conditional_overlap} shows the conditional overlap between scanners, expressed as the probability that a skill flagged by scanner \(A\) is also flagged by scanner \(B\). Overall, agreement between scanners is low and often asymmetric. For example, 33\% of skills flagged by the Cisco Skill Scanner are also flagged by the GPT-5.3-based analysis, whereas only 10.2\% of GPT-5.3 detections overlap with Cisco. Similar patterns appear across other scanner pairs, indicating that scanners frequently identify different sets of skills as suspicious. \Cref{fig:skillssh_flagged_by_k} illustrates the distribution of detections across scanners.
 Among the 8,402 skills flagged by at least one scanner, most are flagged by a single scanner, 6,032 skills. In contrast, 1,629 skills are flagged by two scanners and 540 by three scanners. Only 168 skills are flagged by four scanners, and just 33 skills are flagged by all five scanners. The limited overlap shows that scanner consensus is rare and that most detections lack corroboration by other tools.
 
 
-
-
-  \paragraph{Repository-level Classification Rates.}
+\paragraph{Repository-level Classification Rates.}
 
 \input{tables/skillsh_security_scans}
 

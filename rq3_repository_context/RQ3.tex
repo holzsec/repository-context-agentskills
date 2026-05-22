@@ -4,12 +4,9 @@ To answer \roundframe{RQ3}, we analyze whether skills flagged as malicious by au
 Our analysis shows that repository context plays an important role, as many flagged skills reside in repositories whose documentation and codebase align with the skill functionality and do not exhibit malicious behavior. We focus on skills that are flagged as malicious by both the Cisco Skill Scanner (severity high or critical) and our GPT-5.3-based analyzer with a score greater than 3, resulting in 8,153 flagged (skill, repository) combinations. We exclude two instances from our analysis. First, we exclude ClawHub skills, as no GitHub repository context exists. Second, we exclude skills located in the repository root, as this setup only allows metadata based analysis but not codebase scoring. Among the skills, we find only $\sim$100 hosted as standalone GitHub repositories.  From the remaining set of skill and repository, we randomly sample 3,000 skill repository combinations and collect the corresponding repository metadata together with full repository (failed in 113 cases) clones.
 
 
-%We exclude two instances from our analysis: CrawlHub skills, as there is no GitHub repository context available, and skills that reside the repository's root, as this would only allow metadata, but not codebase scores. However, for the set of \~3.5K repositories we only find \~100 that is hosted as separate GitHub repositories. From the remaining set, we randomly sample 3,000 combinations and collect the corresponding repository metadata and full repository clones.
-
 \paragraph{Metadata Score.}
 
 To understand the repository context of flagged skills, we analyze repository metadata such as size, age, activity, popularity (stars and forks), and issue activity using predefined bucket ranges. \Cref{fig:metadata_buckets} shows the distribution of these metadata scores for the 1,431 repositories containing flagged skills. Overall, these repositories tend to be small and have limited popularity. Almost half of the repositories (47.6\%) are smaller than 2\,MB, while only 11.1\% exceed 50\,MB. Popularity signals are generally low. 43.4\% of repositories have no stars and 66.5\% have no forks, and none of the repositories exceed 100 stars or forks. Similarly, 64.0\% of repositories have no open issues. Most repositories are relatively young and moderately maintained. The majority (73.0\%) were created between two weeks and four months before the crawl, while 17.1\% are older than one year. Despite their limited popularity, many repositories remain active: 47.4\% were updated within the last week. To evaluate whether repositories with flagged skills differ from typical skill repositories, we repeat the analysis using a random set of 1,500 repositories with a matching marketplace distribution. The resulting distributions are similar, suggesting that repositories containing flagged skills do not exhibit distinct metadata characteristics. Instead, the observed differences are driven by marketplace composition rather than the presence of suspicious skills.
-%\Cref{fig:metascore_marketplaces} illustrates these differences across marketplaces. 
 Repositories originating from SkillsDirectory achieve higher metadata scores, which reflects more established projects, whereas Skills.sh and GitHub Archive repositories exhibit lower scores, which correlates with the lack of moderation for hosted skills.
 
 \begin{figure}[t]
@@ -21,15 +18,7 @@ Repositories originating from SkillsDirectory achieve higher metadata scores, wh
     \Description{The figure presents the metadata scores for unique repositories.}
     \label{fig:metadata_buckets}
   \end{minipage}
-  %\hfill
-  %\begin{minipage}{0.41\linewidth}
-  %  \centering
-  %  \includegraphics[width=0.8\linewidth]{figures/metadata_score_cdf.pdf}
-  %  \caption{Metadata score from repositories by marketplaces. } 
-  %  \Description{The figure compares metadata scores of repositories across different marketplaces.}
-    %SkillsDirectory moderation impact visible through higher scores.
-  %  \label{fig:metascore_marketplaces}
-  %\end{minipage}
+  
   \end{figure}
 
   
@@ -85,18 +74,6 @@ We identify a small subset of repositories where the skill is aligned with the c
 \paragraph{Cross-Repository Scores.}
 To understand whether repository context influences the evaluation of individual skills, we analyze skills that appear in multiple repositories. In total, 354 skills appear in more than one repository. Across these skills, the median cross repository variance of the codebase score is 42.0, which corresponds to a median standard deviation of 6.48 and a median score range of 15.0 points. These results indicate moderate context sensitivity, where the same skill can receive noticeably different scores depending on the surrounding repository. The distribution also exhibits a substantial tail of highly variable skills, where the 90th percentile range reaches 33.75 score points. This observation suggests that repository context can significantly influence how a system interprets a skill's behavior.
 
-\begin{comment}
-  - skills with multi-repo support: 413
-  - mean variance: 71.85
-  - median variance: 30.5
-  - p90 variance: 202.1327
-  - mean stddev: 6.2415
-  - median stddev: 5.5227
-  - p90 stddev: 14.2173
-  - mean range: 14.7149
-  - median range: 13.5
-  - p90 range: 33.75
-\end{comment}
 \paragraph{Score Validation.}
 Currently, no publicly available dataset exists that labels repositories as malicious with respect to agent skills. Instead, we follow an inverse validation approach: we evaluate whether repositories containing scanner-flagged skills appear benign when inspected manually and whether our repository-aware scoring reflects these observations.
 To obtain qualitative validation, we randomly sample 20 repositories from the flagged set and provide them to two independent researchers for manual assessment. Reviewers were asked to determine whether the repository appeared benign or suspicious based on its documentation, code structure, and functionality. Both reviewers classified all 18 reviewed repositories as benign, the two remaining were not available anymore. This indicates that the repositories themselves do not exhibit obvious malicious intent.

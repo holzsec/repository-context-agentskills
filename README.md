@@ -50,7 +50,7 @@ This repository contains the code and data artifacts accompanying the paper **"C
 Large data files are hosted externally and are **not** included in this repository. Download and extract the archive before running any script:
 
 ```
-[DATA DOWNLOAD LINK - PLACEHOLDER]
+https://drive.proton.me/urls/A4HTQJ4P2R#YeP42TknFzG7
 ```
 
 After extraction, place the contents so that the `data/` directory has the following layout:
